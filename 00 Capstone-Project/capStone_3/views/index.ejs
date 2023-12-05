@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./main/styles.css" />
+    <title>OpenWeather CapStone Project</title>
+  </head>
+  <body>
+    <header>
+      <h1>Get the Weather Information👇</h1>
+    </header>
+
+    <main>
+      <form class="form_getWeather" action="/get-weather" method="post">
+        <label for="lon">经度:</label>
+        <input type="text" name="lon" id="lon" />
+        <br />
+        <label for="lat">纬度:</label>
+        <input type="text" name="lat" id="lat" />
+        <br />
+        <button class="btn" type="submit">Get Weather</button>
+      </form>
+      <% if(locals.data) { %>
+      <div class="weather_info">
+        <div><h2>Weather Information</h2></div>
+        <div>经度：<%= lon %> 纬度：<%= lat %></div>
+        <div><h3><%= data.weather[0].main %></h3></div>
+        <div>Temperature: <%= data.main.temp %>℃</div>
+        <div>Feels like: <%= data.main.feels_like %>℃</div>
+        <div>Pressure: <%= data.main.pressure %></div>
+        <div>Humidity: <%= data.main.humidity %>%</div>
+      </div>
+      <% } %> <% if (locals.error) {%>
+      <p class="err"><%=error.cod %> <%= error.message %></p>
+      <% } %>
+    </main>
+
+    <footer></footer>
+  </body>
+</html>

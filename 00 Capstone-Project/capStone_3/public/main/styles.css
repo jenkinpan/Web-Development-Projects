@@ -1,0 +1,46 @@
+h1 {
+  text-align: center;
+  color: #265073;
+  font-size: 4rem;
+  margin-top: 100px;
+}
+
+body {
+  background-color: #ecf4d6;
+}
+
+.form_getWeather {
+  text-align: center;
+  margin-top: 50px;
+  font-weight: bold;
+  color: #2d9596;
+}
+
+.btn {
+  color: white;
+  background-color: #265073;
+  font-size: 1.5rem;
+  border-radius: 5px;
+  margin-top: 20px;
+}
+
+.btn:focus {
+  color: blueviolet;
+  border: 2px solid #be3144;
+}
+
+.weather_info {
+  text-align: center;
+  margin-top: 50px;
+  font-weight: bold;
+  font-size: 1.5rem;
+  color: #265073;
+  background-color: #2d9596;
+  line-height: 50px;
+}
+
+.err {
+  text-align: center;
+  font-size: 1.5rem;
+  color: #be3144;
+}
