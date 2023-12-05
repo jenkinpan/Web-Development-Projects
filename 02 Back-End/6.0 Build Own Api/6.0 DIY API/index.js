@@ -35,12 +35,37 @@ app.post("/jokes", (req, res) => {
     jokeType: req.body.type,
   };
   jokes.push(newJoke);
+  console.log(jokes.slice(-1));
+  // ! Array.slice(-1) returns the last element in the array, Array.slice(-2) returns the last two elements in the array, and so on.
   res.json(newJoke);
 });
 
 //5. PUT a joke
+app.put("/jokes/:id", (req, res) => {
+  const id = parseInt(req.params.id);
+  const jokeIndex = jokes.findIndex((joke) => joke.id === id);
+  const updatedJoke = {
+    id: id,
+    jokeText: req.body.text,
+    jokeType: req.body.type,
+  };
+  jokes[jokeIndex] = updatedJoke;
+  res.json(updatedJoke);
+});
 
 //6. PATCH a joke
+app.patch("/jokes/:id", (req, res) => {
+  const id = parseInt(req.params.id);
+  const existingJoke = jokes.find((joke) => joke.id === id);
+  const updatedJoke = {
+    id: id,
+    jokeText: req.body.text || existingJoke.jokeText,
+    jokeType: req.body.type || existingJoke.jokeType,
+  };
+  const jokeIndex = jokes.findIndex((joke) => joke.id === id);
+  jokes[jokeIndex] = updatedJoke;
+  res.json(updatedJoke);
+});
 
 //7. DELETE Specific joke
 
