@@ -1,5 +1,4 @@
 import express from "express";
-import bodyParser from "body-parser";
 
 const app = express();
 const port = 4000;
@@ -35,8 +34,8 @@ let posts = [
 let lastId = 3;
 
 // Middleware
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 // GET all posts
 app.get("/posts", (req, res) => {
@@ -53,7 +52,7 @@ app.get("/posts/:id", (req, res) => {
 
 // POST a new post
 app.post("/posts", (req, res) => {
-  const newId = lastId += 1;
+  const newId = (lastId += 1);
   const post = {
     id: newId,
     title: req.body.title,
