@@ -98,6 +98,9 @@ button:hover {
 }
 
 .restart-button {
+  position: absolute;
+  top: 45%;
+  left: 47.5%;
   display: inline-block;
   background-color: #fff;
   color: #333;
