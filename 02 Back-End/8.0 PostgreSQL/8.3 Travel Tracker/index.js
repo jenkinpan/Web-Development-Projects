@@ -1,4 +1,5 @@
 import express from "express";
+import bodyParser from "body-parser";
 import pg from "pg";
 
 const app = express();
@@ -14,11 +15,11 @@ const db = new pg.Client({
 
 db.connect();
 
-app.use(express.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
 async function checkVisited() {
-  const result = await db.query("SELECT country_code FROM visited_country");
+  const result = await db.query("SELECT country_code FROM visited_countries");
 
   let countries = [];
   result.rows.forEach((country) => {
@@ -27,30 +28,49 @@ async function checkVisited() {
   return countries;
 }
 
+// Get home page
 app.get("/", async (req, res) => {
   //Write your code here.;
   const countries = await checkVisited();
   res.render("index.ejs", { countries: countries, total: countries.length });
 });
 
+// Insert new country
 app.post("/add", async (req, res) => {
   const code = req.body.country;
-  await addCountry(code);
-  res.redirect("/");
-});
+  try {
+    const result = await db.query(
+      "SELECT country_code FROM countries WHERE LOWER(country_name) LIKE $1 || '%';",
+      [code.toLowerCase()]
+    );
 
-async function addCountry(code) {
-  db.query(
-    `INSERT INTO visited_country (country_code) values('${code}')`,
-    (err, res) => {
-      if (err) {
-        console.log(err);
-      } else {
-        console.log(res.err);
-      }
+    const countryCode = result.rows[0].country_code;
+
+    try {
+      await db.query(
+        "INSERT INTO visited_countries (country_code) values($1)",
+        [countryCode]
+      );
+      res.redirect("/");
+    } catch (err) {
+      console.log(err);
+      const countries = await checkVisited();
+      res.render("index.ejs", {
+        countries: countries,
+        total: countries.length,
+        error: "Country has already been added, try again.",
+      });
     }
-  );
-}
+  } catch (err) {
+    console.log(err);
+    const countries = await checkVisited();
+    res.render("index.ejs", {
+      countries: countries,
+      total: countries.length,
+      error: "Country does not exist, try again.",
+    });
+  }
+});
 
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
