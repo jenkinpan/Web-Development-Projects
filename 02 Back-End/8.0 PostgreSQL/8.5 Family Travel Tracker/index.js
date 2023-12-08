@@ -1,3 +1,11 @@
+/**
+ * @file Family Travel Tracker
+ * @description A web application for tracking visited countries by family members.
+ * @requires express
+ * @requires body-parser
+ * @requires pg
+ */
+
 import express from "express";
 import bodyParser from "body-parser";
 import pg from "pg";
@@ -21,6 +29,11 @@ let currentUserId = 1;
 
 let users = [];
 
+/**
+ * @function checkVisited
+ * @description Retrieves the list of visited countries for the current user from the database.
+ * @returns {Promise<string[]>} The list of visited country codes.
+ */
 async function checkVisited() {
   const result = await db.query(
     "SELECT country_code FROM visited_countries JOIN users ON users.id = user_id WHERE user_id = $1; ",
@@ -33,12 +46,21 @@ async function checkVisited() {
   return countries;
 }
 
+/**
+ * @function getCurrentUser
+ * @description Retrieves the current user from the database.
+ * @returns {Promise<Object>} The current user object.
+ */
 async function getCurrentUser() {
   const result = await db.query("SELECT * FROM users");
   users = result.rows;
   return users.find((user) => user.id == currentUserId);
 }
 
+/**
+ * @route GET /
+ * @description Renders the index page with the list of visited countries, total count, user list, and current user's color.
+ */
 app.get("/", async (req, res) => {
   const countries = await checkVisited();
   const currentUser = await getCurrentUser();
@@ -49,6 +71,11 @@ app.get("/", async (req, res) => {
     color: currentUser.color,
   });
 });
+
+/**
+ * @route POST /add
+ * @description Adds a visited country for the current user.
+ */
 app.post("/add", async (req, res) => {
   const input = req.body["country"];
   const currentUser = await getCurrentUser();
@@ -75,6 +102,10 @@ app.post("/add", async (req, res) => {
   }
 });
 
+/**
+ * @route POST /user
+ * @description Handles user selection or adding a new user.
+ */
 app.post("/user", async (req, res) => {
   if (req.body.add === "new") {
     res.render("new.ejs");
@@ -84,6 +115,10 @@ app.post("/user", async (req, res) => {
   }
 });
 
+/**
+ * @route POST /new
+ * @description Adds a new user to the database.
+ */
 app.post("/new", async (req, res) => {
   const name = req.body.name;
   const color = req.body.color;
